@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+    function setValue(value) {
+        if (localStorage.getItem('this_week') === null) {
+            var endValue = value
+        } else {
+            var endValue = localStorage.getItem('this_week') + "," + value
+        }
+        localStorage.setItem("this_week", endValue);
+        init()
+    }
+
+    function init() {
+        document.getElementsByClassName("sum")[0].innerHTML = "Sum of this week: " + getSum()
+        document.getElementsByClassName("this_week")[0].innerHTML = "This week: " + getThisWeek()
+        document.getElementsByClassName("history")[0].innerHTML = "History: " + getHistory()
+    }
+
+    function getSum() {
+        if (localStorage.getItem('this_week') === null) return 0
+        return localStorage.getItem('this_week').split(',').reduce((partialSum, a) => partialSum + parseInt(a), 0);
+    }
+
+    function getHistory() {
+        if (localStorage.getItem('history') === null) return ''
+        return localStorage.getItem('history').split(';');
+    }
+
+    function getThisWeek() {
+        if (localStorage.getItem('this_week') === null) return ''
+        return localStorage.getItem('this_week').split(',');
+    }
+
+    function finishWeek() {
+        if (localStorage.getItem('history') === null) {
+            var oldHistory = ''
+        } else {
+            var oldHistory = localStorage.getItem('history')
+        }
+
+        localStorage.setItem('history', oldHistory + new Date().toISOString().slice(0, 10) + '=' + getSum() + ';');
+        localStorage.removeItem('this_week');
+        init();
+    }
+
+</script>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="init()">
+<div class="sum"></div>
+<div class="this_week"></div>
+<div class="history"></div>
+<button onclick="finishWeek()">Finish week</button>
+<div>
+    <img src="images/level1.png"/>
+    <div onclick="setValue('1d');" class="level1day"><p style="border: black;">Day
+        time</p></div>
+    <div onclick="setValue('1n')"><p style="border: black;">Night time</p></div>
+</div>
+<div><img src="images/level2.png"/></div>
+<div><img src="images/level3.png"/></div>
+<div><img src="images/level4.png"/></div>
+<div><img src="images/level5.png"/></div>
+</body>
+</html>
